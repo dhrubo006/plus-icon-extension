@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import './Popup.css';
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import "./Popup.css";
+import { FaTrash } from "react-icons/fa";
 
 const Popup = () => {
   const [urls, setUrls] = useState([]);
@@ -11,6 +12,19 @@ const Popup = () => {
     });
   }, []);
 
+  const handleClearUrls = () => {
+    chrome.storage.local.set({ urls: [] }, () => {
+      setUrls([]);
+    });
+  };
+
+  const handleDeleteUrl = (index) => {
+    const newUrls = urls.filter((_, i) => i !== index);
+    chrome.storage.local.set({ urls: newUrls }, () => {
+      setUrls(newUrls);
+    });
+  };
+
   return (
     <div className="popup">
       <h1>Stored URLs</h1>
@@ -20,11 +34,18 @@ const Popup = () => {
             <a href={url} target="_blank" rel="noopener noreferrer">
               {url}
             </a>
+            <FaTrash
+              className="delete-icon"
+              onClick={() => handleDeleteUrl(index)}
+            />
           </li>
         ))}
       </ul>
+      <button className="clear-button" onClick={handleClearUrls}>
+        Clear All URLs
+      </button>
     </div>
   );
 };
 
-ReactDOM.render(<Popup />, document.getElementById('root'));
+ReactDOM.render(<Popup />, document.getElementById("root"));
