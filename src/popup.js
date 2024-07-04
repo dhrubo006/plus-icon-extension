@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./Popup.css";
 import { FaTrash } from "react-icons/fa";
 import extensionIcon from "../public/icons/icon128.png";
@@ -58,4 +58,7 @@ const Popup = () => {
   );
 };
 
-ReactDOM.render(<Popup />, document.getElementById("root"));
+// Updated to use createRoot
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
+root.render(<Popup />);
