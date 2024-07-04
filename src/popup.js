@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import "./Popup.css";
-import { FaTrash } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import './Popup.css';
+import { FaTrash } from 'react-icons/fa';
 
 const Popup = () => {
   const [urls, setUrls] = useState([]);
@@ -29,14 +29,15 @@ const Popup = () => {
     <div className="popup">
       <h1>Stored URLs</h1>
       <ul>
-        {urls.map((url, index) => (
+        {urls.map((item, index) => (
           <li key={index}>
-            <a href={url} target="_blank" rel="noopener noreferrer">
-              {url}
+            <img src={item.favicon} alt="Favicon" className="favicon" />
+            <a href={item.url} target="_blank" rel="noopener noreferrer">
+              {item.url}
             </a>
-            <FaTrash
-              className="delete-icon"
-              onClick={() => handleDeleteUrl(index)}
+            <FaTrash 
+              className="delete-icon" 
+              onClick={() => handleDeleteUrl(index)} 
             />
           </li>
         ))}
@@ -48,4 +49,4 @@ const Popup = () => {
   );
 };
 
-ReactDOM.render(<Popup />, document.getElementById("root"));
+ReactDOM.render(<Popup />, document.getElementById('root'));

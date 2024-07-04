@@ -32,8 +32,8 @@ ul {
 
 li {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin: 5px 0;
   word-wrap: break-word;
 }
@@ -42,10 +42,17 @@ a {
   text-decoration: none;
   color: #007bff;
   flex-grow: 1;
+  margin-left: 10px;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+.favicon {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
 }
 
 .clear-button {
