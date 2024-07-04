@@ -1,57 +1,20 @@
-console.log("content.js loaded"); // First line to verify script is running
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import PlusIcon from '../src/components/plusicon';
+import '../src/components/PlusIcon.css';
 
-window.onload = function () {
-  console.log("Window onload event fired"); // Second log to verify window onload
+console.log('content.js loaded');  // First line to verify script is running
 
-  // Create a container for the React app
-  var reactContainer = document.createElement("div");
-  reactContainer.id = "react_container";
-  document.body.appendChild(reactContainer);
-  console.log("React container created and appended to body");
+window.onload = function() {
+  console.log('Window onload event fired');  // Second log to verify window onload
 
-  // Inject the React web app
-  var iframe = document.createElement("iframe");
-  iframe.src = chrome.runtime.getURL("index.html"); // Ensure this path is correct
-  iframe.style.position = "fixed";
-  iframe.style.bottom = "10px";
-  iframe.style.right = "10px";
-  iframe.style.width = "50px";
-  iframe.style.height = "50px";
-  iframe.style.border = "none";
-  iframe.style.zIndex = "1000";
-  document.getElementById("react_container").appendChild(iframe);
-  console.log("Iframe created and appended to react_container");
+  // Create a container for the PlusIcon component
+  const plusIconContainer = document.createElement('div');
+  plusIconContainer.id = 'plus_icon_container';
+  document.body.appendChild(plusIconContainer);
+  console.log('Plus icon container created and appended to body');
 
-  // Function to get the favicon URL
-  const getFavicon = () => {
-    let favicon = "";
-    const nodeList = document.querySelectorAll('link[rel~="icon"]');
-    if (nodeList.length > 0) {
-      favicon = nodeList[0].href;
-    }
-    return favicon;
-  };
-
-  // Listen for messages from the iframe
-  window.addEventListener("message", function (event) {
-    console.log("Received message:", event.data);
-    if (event.data.action === "storeUrl") {
-      const currentUrl = window.location.href;
-      const favicon = getFavicon();
-      chrome.runtime.sendMessage(
-        { action: "storeUrl", url: currentUrl, favicon: favicon },
-        (response) => {
-          console.log("Response:", response);
-        }
-      );
-    }
-  });
-
-  iframe.onload = function () {
-    console.log("Iframe loaded");
-    iframe.contentWindow.postMessage(
-      { action: "addPlusIconClickListener" },
-      "*"
-    );
-  };
+  // Render the PlusIcon component
+  const root = createRoot(plusIconContainer);
+  root.render(<PlusIcon />);
 };

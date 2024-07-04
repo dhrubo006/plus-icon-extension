@@ -1,55 +1,51 @@
 import React, { useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
+import Draggable from 'react-draggable';
 import './PlusIcon.css';
-
 
 const PlusIcon = () => {
   useEffect(() => {
     console.log('PlusIcon component mounted');
-    const handleMessage = (event) => {
-      console.log('Received message in PlusIcon:', event.data);
-      if (event.data.action === 'addPlusIconClickListener') {
-        const captureAndStoreUrl = () => {
-          console.log('Plus icon clicked');
-          window.parent.postMessage({ action: 'storeUrl' }, '*');
-        };
 
-        const plusIconElement = document.getElementById('plus-icon');
-        if (plusIconElement) {
-          plusIconElement.addEventListener('click', captureAndStoreUrl);
-        } else {
-          console.error('Plus icon element not found');
+    const captureAndStoreUrl = () => {
+      console.log('Plus icon clicked');
+
+      // Get the current URL
+      const currentUrl = window.location.href;
+
+      // Function to get the favicon URL
+      const getFavicon = () => {
+        let favicon = "";
+        const nodeList = document.querySelectorAll('link[rel~="icon"]');
+        if (nodeList.length > 0) {
+          favicon = nodeList[0].href;
         }
-      }
+        return favicon;
+      };
+
+      const favicon = getFavicon();
+
+      // Send the URL and favicon to the background script
+      chrome.runtime.sendMessage({ action: 'storeUrl', url: currentUrl, favicon: favicon }, (response) => {
+        console.log('Response:', response);
+      });
     };
 
-    window.addEventListener('message', handleMessage);
+    const plusIconElement = document.getElementById('plus-icon');
+    if (plusIconElement) {
+      plusIconElement.addEventListener('click', captureAndStoreUrl);
+    } else {
+      console.error('Plus icon element not found');
+    }
 
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
   }, []);
 
   return (
-    <div
-      id="plus-icon" className="plus-icon"
-      //style={{
-        //position: 'fixed',
-        //bottom: '10px',
-        //right: '10px',
-        //cursor: 'pointer',
-        //zIndex: 1000,
-        //backgroundColor: '#5bc0de', /* Light blue background color */
-        //borderRadius: '50%',       // Optional: make it round
-        //display: 'flex',
-        //alignItems: 'center',
-        //justifyContent: 'center',
-        //width: '50px',
-        //height: '50px'
-      //}}
-    >
-      <FaPlus size={30} color="white" />  {/* Set the icon size and color */}
-    </div>
+    <Draggable>
+      <div id="plus-icon" className="plus-icon">
+        <FaPlus size={30} color="white" />  {/* Set the icon size and color */}
+      </div>
+    </Draggable>
   );
 };
 
