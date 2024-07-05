@@ -1,9 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import Draggable from 'react-draggable';
 import './PlusIcon.css';
 
 const PlusIcon = () => {
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const clickTimeoutRef = useRef(null);
+  const TIME_THRESHOLD = 200; // Time threshold in milliseconds
+
   useEffect(() => {
     console.log('PlusIcon component mounted');
 
@@ -38,11 +43,48 @@ const PlusIcon = () => {
       console.error('Plus icon element not found');
     }
 
-  }, []);
+    return () => {
+      if (plusIconElement) {
+        plusIconElement.removeEventListener('click', captureAndStoreUrl);
+      }
+    };
+  }, [dragging]);
+
+  const handleMouseDown = () => {
+    clickTimeoutRef.current = setTimeout(() => {
+      setDragging(true);
+    }, TIME_THRESHOLD); // Adjust the time threshold as needed
+  };
+
+  const handleMouseUp = () => {
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      if (!dragging) {
+        // This is a click, not a drag
+        const plusIconElement = document.getElementById('plus-icon');
+        plusIconElement.click();
+      }
+    }
+    setTimeout(() => setDragging(false), 0); // Reset dragging state
+  };
+
+  const handleDrag = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
+  };
 
   return (
-    <Draggable>
-      <div id="plus-icon" className="plus-icon">
+    <Draggable
+      position={position}
+      onStart={() => setDragging(false)}
+      onDrag={handleDrag}
+      onStop={() => setDragging(false)}
+    >
+      <div
+        id="plus-icon"
+        className="plus-icon"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
         <FaPlus size={30} color="white" />  {/* Set the icon size and color */}
       </div>
     </Draggable>
