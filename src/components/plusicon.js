@@ -1,55 +1,93 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FaPlus } from 'react-icons/fa';
+import Draggable from 'react-draggable';
 import './PlusIcon.css';
 
-
 const PlusIcon = () => {
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const clickTimeoutRef = useRef(null);
+  const TIME_THRESHOLD = 200; // Time threshold in milliseconds
+
   useEffect(() => {
     console.log('PlusIcon component mounted');
-    const handleMessage = (event) => {
-      console.log('Received message in PlusIcon:', event.data);
-      if (event.data.action === 'addPlusIconClickListener') {
-        const captureAndStoreUrl = () => {
-          console.log('Plus icon clicked');
-          window.parent.postMessage({ action: 'storeUrl' }, '*');
-        };
 
-        const plusIconElement = document.getElementById('plus-icon');
-        if (plusIconElement) {
-          plusIconElement.addEventListener('click', captureAndStoreUrl);
-        } else {
-          console.error('Plus icon element not found');
+    const captureAndStoreUrl = () => {
+      console.log('Plus icon clicked');
+
+      // Get the current URL
+      const currentUrl = window.location.href;
+
+      // Function to get the favicon URL
+      const getFavicon = () => {
+        let favicon = "";
+        const nodeList = document.querySelectorAll('link[rel~="icon"]');
+        if (nodeList.length > 0) {
+          favicon = nodeList[0].href;
         }
-      }
+        return favicon;
+      };
+
+      const favicon = getFavicon();
+
+      // Send the URL and favicon to the background script
+      chrome.runtime.sendMessage({ action: 'storeUrl', url: currentUrl, favicon: favicon }, (response) => {
+        console.log('Response:', response);
+      });
     };
 
-    window.addEventListener('message', handleMessage);
+    const plusIconElement = document.getElementById('plus-icon');
+    if (plusIconElement) {
+      plusIconElement.addEventListener('click', captureAndStoreUrl);
+    } else {
+      console.error('Plus icon element not found');
+    }
 
     return () => {
-      window.removeEventListener('message', handleMessage);
+      if (plusIconElement) {
+        plusIconElement.removeEventListener('click', captureAndStoreUrl);
+      }
     };
-  }, []);
+  }, [dragging]);
+
+  const handleMouseDown = () => {
+    clickTimeoutRef.current = setTimeout(() => {
+      setDragging(true);
+    }, TIME_THRESHOLD); // Adjust the time threshold as needed
+  };
+
+  const handleMouseUp = () => {
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      if (!dragging) {
+        // This is a click, not a drag
+        const plusIconElement = document.getElementById('plus-icon');
+        plusIconElement.click();
+      }
+    }
+    setTimeout(() => setDragging(false), 0); // Reset dragging state
+  };
+
+  const handleDrag = (e, data) => {
+    setPosition({ x: data.x, y: data.y });
+  };
 
   return (
-    <div
-      id="plus-icon" className="plus-icon"
-      //style={{
-        //position: 'fixed',
-        //bottom: '10px',
-        //right: '10px',
-        //cursor: 'pointer',
-        //zIndex: 1000,
-        //backgroundColor: '#5bc0de', /* Light blue background color */
-        //borderRadius: '50%',       // Optional: make it round
-        //display: 'flex',
-        //alignItems: 'center',
-        //justifyContent: 'center',
-        //width: '50px',
-        //height: '50px'
-      //}}
+    <Draggable
+      position={position}
+      onStart={() => setDragging(false)}
+      onDrag={handleDrag}
+      onStop={() => setDragging(false)}
     >
-      <FaPlus size={30} color="white" />  {/* Set the icon size and color */}
-    </div>
+      <div
+        id="plus-icon"
+        className="plus-icon"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
+        <FaPlus size={30} color="white" />  {/* Set the icon size and color */}
+      </div>
+    </Draggable>
   );
 };
 
