@@ -14,28 +14,30 @@ const PlusIcon = () => {
 
   useEffect(() => {
     console.log('PlusIcon component mounted');
-  }, [dragging]);
+  }, []);
 
   const handleMouseDown = () => {
-    console.log('mouse is down')
+    console.log('Mouse down');
     clickTimeoutRef.current = setTimeout(() => {
       setDragging(true);
+      console.log('Dragging set to true');
     }, TIME_THRESHOLD); // Adjust the time threshold as needed
   };
 
   const handleMouseUp = () => {
-    console.log('mouse is up')
+    console.log('Mouse up');
     if (clickTimeoutRef.current) {
       clearTimeout(clickTimeoutRef.current);
       if (!dragging) {
-        // This is a click, not a drag
-        setShowMenu(true);
+        console.log('Click detected');
+        setShowMenu(!showMenu);
       }
     }
     setTimeout(() => setDragging(false), 0); // Reset dragging state
   };
 
   const handleDrag = (e, data) => {
+    console.log('Dragging', data);
     setPosition({ x: data.x, y: data.y });
   };
 

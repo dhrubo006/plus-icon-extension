@@ -16,3 +16,86 @@
   padding: 0;              /* Remove padding */
 }
 
+.menu {
+  position: absolute;
+  top: 60px; /* Adjust based on the size of the PlusIcon */
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu button {
+  padding: 10px;
+  background-color: #5bc0de;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+}
+
+.menu button:hover {
+  background-color: #4aa7c2;
+}
+
+.menu button:last-child {
+  border-bottom: none;
+}
+
+.collection-manager {
+  position: absolute;
+  top: 100px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  padding: 10px;
+}
+
+.collection-manager h2 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.collection-manager ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+
+.collection-manager li {
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.collection-manager li:hover {
+  background-color: #f0f0f0;
+}
+
+.collection-manager input {
+  padding: 5px;
+  margin: 0 0 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.collection-manager button {
+  padding: 10px;
+  background-color: #5bc0de;
+  border: none;
+  cursor: pointer;
+  color: white;
+  width: 100%;
+}
+
+.collection-manager button:hover {
+  background-color: #4aa7c2;
+}
+
