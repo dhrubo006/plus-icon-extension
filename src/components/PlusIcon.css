@@ -25,3 +25,14 @@
   padding: 10px;
   z-index: 1000; /* Ensure it is above other elements */
 }
+
+.collection-manager {
+  position: fixed;
+  top: 100px;
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000; /* Ensure it is above other elements */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add shadow */
+}

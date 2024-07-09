@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FaPlus } from "react-icons/fa";
 import Draggable from "react-draggable";
+import CollectionManager from './CollectionManager';
 import "./PlusIcon.css";
 
 const PlusIcon = () => {
@@ -11,10 +12,6 @@ const PlusIcon = () => {
   const [showCollections, setShowCollections] = useState(false);
   const TIME_THRESHOLD = 200; // Time threshold in milliseconds
 
-  
-  
-  //////////////////////////////////////// URL Capture Function ////////////////////////////////////////////////////////////
-  
   const captureAndStoreUrl = () => {
     console.log("Plus icon clicked or Add Now clicked");
 
@@ -23,10 +20,10 @@ const PlusIcon = () => {
 
     // Function to get the favicon URL
     const getFavicon = () => {
-      console.log('getFevicon function called')
+      console.log('getFavicon function called')
       let favicon = "";
       const nodeList = document.querySelectorAll('link[rel~="icon"]');
-      console.log('noedeList: ', nodeList)
+      console.log('nodeList: ', nodeList)
       if (nodeList.length > 0) {
         favicon = nodeList[0].href;
         console.log('favicon: ', favicon)
@@ -44,10 +41,6 @@ const PlusIcon = () => {
       }
     );
   };
-  //////////////////////////////////////////////XXXXXXXXXXXXXXXXXX//////////////////////////////////////////////////////////////////////
-
-
-  ////////////////////////////////////////////////handling mouse function ////////////////////////////////////////////////////////////////////
 
   const handleMouseDown = () => {
     console.log("Mouse down");
@@ -63,22 +56,16 @@ const PlusIcon = () => {
       clearTimeout(clickTimeoutRef.current);
       if (!dragging) {
         // This is a click, not a drag
-        console.log("Set show menu to true");
+        console.log("Toggle show menu");
         setShowMenu(prevShowMenu => !prevShowMenu); // Toggle the state
         if (showMenu) {
           document.getElementById("plus-icon-menu").style.display = "block";
         }
-        //captureAndStoreUrl();
       }
     }
     setTimeout(() => setDragging(false), 0); // Reset dragging state
   };
 
-  //////////////////////////////////////////////XXXXXXXXXXXXXXXXXXXXXXX////////////////////////////////////////
-
-  
-  /////////////////////////////////eVEN lISTENERS CALLING THE THE MOUSE EVENT FUNCTIONS /////////////////////////////
-  
   useEffect(() => {
     console.log("PlusIcon component mounted");
 
@@ -104,13 +91,11 @@ const PlusIcon = () => {
     setPosition({ x: data.x, y: data.y });
   };
 
-
-  ///////////////////////////////////////XXXXXXXXXXXXXXXXXXXXXXXXXXXXX//////////////////////////////////
-
-
-
-  
-
+  const handleAddToCollection = () => {
+    console.log("Add to Collection clicked");
+    setShowCollections(true);
+    setShowMenu(false);
+  };
 
   return (
     <Draggable
@@ -127,10 +112,13 @@ const PlusIcon = () => {
           style={{ display: showMenu ? "block" : "none" }}
         >
           <button onClick={captureAndStoreUrl}>Add Now</button>
-          <button onClick={() => console.log("Add to Collection clicked")}>
-            Add to Collection
-          </button>
+          <button onClick={handleAddToCollection}>Add to Collection</button>
         </div>
+        {showCollections && (
+          <CollectionManager
+            onClose={() => setShowCollections(false)}
+          />
+        )}
       </div>
     </Draggable>
   );
