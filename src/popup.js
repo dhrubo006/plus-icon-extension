@@ -7,9 +7,10 @@ import extensionIcon from "../public/icons/icon128.png";
 const Popup = () => {
   const [urls, setUrls] = useState([]);
   const [collections, setCollections] = useState([]);
+  const [hoveredCollection, setHoveredCollection] = useState(null);
 
   useEffect(() => {
-    // Fetch URLs from Chrome storage
+    // Fetch URLs and collections from Chrome storage
     chrome.storage.local.get({ urls: [], collections: {} }, (result) => {
       setUrls(result.urls);
       setCollections(Object.entries(result.collections || {}));
@@ -21,7 +22,6 @@ const Popup = () => {
       setUrls([]);
     });
   };
-
 
   const handleClearCollections = () => {
     chrome.storage.local.set({ collections: {} }, () => {
@@ -87,33 +87,38 @@ const Popup = () => {
           </li>
         ))}
       </ul>
+
       
 
       <h2>Collections</h2>
       <ul>
         {collections.map(([name, urls], collectionIndex) => (
-          <li key={collectionIndex}>
+          <li
+            key={collectionIndex}
+            onMouseEnter={() => setHoveredCollection(name)}
+            onMouseLeave={() => setHoveredCollection(null)}
+          >
             <strong className="collection-name">{name}</strong>
             <FaTrash
               className="delete-icon"
               onClick={() => handleDeleteCollection(name)}
             />
-            <ul>
-              {urls.map((item, urlIndex) => (
-                <li key={urlIndex}>
-                  <img src={item.favicon} alt="Favicon" className="favicon" />
-                  <a href={item.url} target="_blank" rel="noopener noreferrer">
-                    {item.url}
-                  </a>
-                  <FaTrash
-                    className="delete-icon"
-                    onClick={() =>
-                      handleDeleteUrlFromCollection(name, urlIndex)
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
+            {hoveredCollection === name && (
+              <ul className="collection-urls">
+                {urls.map((item, urlIndex) => (
+                  <li key={urlIndex}>
+                    <img src={item.favicon} alt="Favicon" className="favicon" />
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      {item.url}
+                    </a>
+                    <FaTrash
+                      className="delete-icon"
+                      onClick={() => handleDeleteUrlFromCollection(name, urlIndex)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>

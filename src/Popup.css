@@ -92,7 +92,15 @@ a:hover {
   color: #c9302c;
 }
 
-
 .collection-name {
   color: #007bff; /* Set the color to #007bff */
+  cursor: pointer;
+}
+
+.collection-urls {
+  display: none;
+}
+
+li:hover > .collection-urls {
+  display: block;
 }
