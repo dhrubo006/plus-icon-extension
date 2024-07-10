@@ -36,3 +36,17 @@
   z-index: 1000; /* Ensure it is above other elements */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add shadow */
 }
+
+.collection-manager ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.collection-manager li {
+  cursor: pointer;
+  margin: 5px 0;
+}
+
+.collection-manager li:hover {
+  text-decoration: underline;
+}

@@ -10,13 +10,18 @@ const PlusIcon = () => {
   const clickTimeoutRef = useRef(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showCollections, setShowCollections] = useState(false);
+  const [showCreateCollection, setShowCreateCollection] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState("");
   const TIME_THRESHOLD = 200; // Time threshold in milliseconds
 
   const captureAndStoreUrl = () => {
     console.log("Plus icon clicked or Add Now clicked");
 
     // Get the current URL
-    const currentUrl = window.location.href;
+    const url = window.location.href;
+    setCurrentUrl(url);
+    console.log('url: ', url)
+    
 
     // Function to get the favicon URL
     const getFavicon = () => {
@@ -35,7 +40,7 @@ const PlusIcon = () => {
 
     // Send the URL and favicon to the background script
     chrome.runtime.sendMessage(
-      { action: "storeUrl", url: currentUrl, favicon: favicon },
+      { action: "storeUrl", url: url, favicon: favicon },
       (response) => {
         console.log("Response:", response);
       }
@@ -93,7 +98,10 @@ const PlusIcon = () => {
 
   const handleAddToCollection = () => {
     console.log("Add to Collection clicked");
+    const currentUrl = window.location.href; // Capture the current URL
+    console.log('Current url: ', currentUrl)
     setShowCollections(true);
+    setShowCreateCollection(true);
     setShowMenu(false);
   };
 
@@ -116,7 +124,12 @@ const PlusIcon = () => {
         </div>
         {showCollections && (
           <CollectionManager
-            onClose={() => setShowCollections(false)}
+          onClose={() => {
+            setShowCollections(false);
+            setShowCreateCollection(false);
+          }}
+          currentUrl={currentUrl}
+            
           />
         )}
       </div>

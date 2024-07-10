@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'storeUrlInCollection') {
     chrome.storage.local.get({ collections: {} }, (result) => {
-      const collections = result.collections;
+      const collections = result.collections || {};
       if (!collections[message.collection]) {
         collections[message.collection] = [];
       }
